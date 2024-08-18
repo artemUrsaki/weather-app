@@ -3,20 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import PageLayout from '@/Layouts/PageLayout.vue';
 
 defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
+    temp: String
 });
 
 function handleImageError() {
@@ -31,6 +18,8 @@ function handleImageError() {
     <Head title="Forecast" />
     
     <PageLayout>
-        <h1></h1>
+        <main class="container">
+            <h1>{{ temp }}</h1>
+        </main>
     </PageLayout>
 </template>
