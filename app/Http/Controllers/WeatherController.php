@@ -14,15 +14,32 @@ class WeatherController extends Controller
         try {
             $info = UserController::getUserInfo($request);
 
-            $url = "https://". env('USER_PASSWORD') ."@api.meteomatics.com/now/t_2m:C/". $info['latitude'] .",". $info['longitude'] ."/json?model=mix";
+            $url = "https://". env('USER_PASSWORD') ."@api.meteomatics.com/now/t_2m:C,wind_speed_10m:ms,weather_symbol_1h:idx/". $info['latitude'] .",". $info['longitude'] ."/json?model=mix";
             $response = Http::get($url);
             $weatherInfo = json_decode($response, true);
 
-            $temp = $weatherInfo['data'][0]['coordinates'][0]['dates'][0]['value'];
+            $temp = round($weatherInfo['data'][0]['coordinates'][0]['dates'][0]['value']);
+            $wind = $weatherInfo['data'][1]['coordinates'][0]['dates'][0]['value'];
+            $symbol = $weatherInfo['data'][2]['coordinates'][0]['dates'][0]['value'];
+            $city = $info['city_name'];
 
-            return Inertia::render('Home', ['temp' => $temp]);
+            $bg = self::setBackground(1);
+
+            return Inertia::render('Home', [
+                'city' => $city,
+                'temp' => $temp,
+                'wind' => $wind,
+                'symbol' => 1,
+            ]);
         } catch(\Exception $e) {
             return view('404', ['error' => $e->getMessage()]);
         }
+    }
+
+    private function setBackground(int $symbol) {
+        return match ($symbol) {
+            1 => 'clear',
+            default => null
+        };
     }
 }
