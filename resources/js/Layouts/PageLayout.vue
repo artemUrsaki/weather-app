@@ -1,11 +1,11 @@
 <script setup>
 import TextInput from '@/Components/TextInput.vue';
+import { Head } from '@inertiajs/vue3';
 </script>
 
 <template>
     <Head title="Forecast" />
-    <div class="h-screen w-full bg-cover bg-gradient-to-b">
-        <header class="px-12 py-3 shadow-md">
+        <header class="px-12 py-3 shadow-md bg-white animate-slideIn">
             <nav class="flex items-center justify-between">
                 <a href="/">
                     <img class="max-w-12 drop-shadow-md" src="img/logo.ico" alt="logo">
@@ -15,8 +15,7 @@ import TextInput from '@/Components/TextInput.vue';
             </nav>
         </header>
 
-        <main class="mt-10">
+        <main class="mt-20">
             <slot />
         </main>
-    </div>
 </template>

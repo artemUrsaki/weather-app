@@ -6,7 +6,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [WeatherController::class, 'getWeather']);
+Route::get('/{url?}', [WeatherController::class, 'getWeather'])
+    ->where('url', 'getCityWeather');
+
+Route::get('/getcities', [WeatherController::class, 'getCities']);
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
