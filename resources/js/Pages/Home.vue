@@ -1,6 +1,8 @@
 <script setup>
 import PageLayout from '@/Layouts/PageLayout.vue';
 import { ref, onMounted } from 'vue';
+import MainWeather from '@/Components/MainWeather.vue';
+import Forecast from '@/Components/Forecast.vue';
 
 const props = defineProps({
     city: String,
@@ -25,10 +27,9 @@ const weatherInfo = ref({
         'Wind Gusts': props.windGusts,
         'Precipitation': props.precip,
     },
-    forecast: props.forecast,
 });
 
-const hideDiv = ref('hidden');
+const forecastRef = ref(props.forecast);
 
 const background = function(icon) {
     if (weatherInfo.value.icon.indexOf('n') > -1) 
@@ -62,15 +63,12 @@ const updateProps = function (newProps) {
         }
         else weatherInfo.value[key] = newProps[key];
     }
+    forecastRef.value = newProps['forecast'];
     currentBg.value = background(weatherInfo.value.icon);
     changer.value += 1;
 };
 
 onMounted(() => {
-    setTimeout(() => {
-        hideDiv.value = 'block';
-    }, 500);
-
     $('#city-search').on('select2:select', function (data) {
         const info = data.params.data.text.split(';');
         $.ajax({
@@ -87,23 +85,14 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="absolute z-[-1] h-screen w-full animate-fadeBg bg-cover bg-gradient-to-b" :class="currentBg" :key="changer"></div>
+    <div class="absolute z-[-1] h-full w-full animate-fadeBg bg-cover bg-gradient-to-b" :class="currentBg" :key="changer"></div>
     <PageLayout>
-        <div class="container mx-auto" :key="changer">
-            <div class="flex flex-col md:flex-row items-center mt-40 text-white relative">
-                <img :src="'img/' + weatherInfo.icon + '.svg'" alt="weather_icon" class="h-64 mt-32 mb-8 drop-shadow-lg animate-scaleIn md:m-0 md:h-45 md:ml-10">
-                <h2 class="text-2xl font-bold tracking-widest drop-shadow-lg animate-fade md:absolute right-0 bottom-0">{{ weatherInfo.temp }}&degC</h2>
-                <div class="absolute md:right-0 md:top-0 flex flex-col items-center animate-fade">
-                    <h1 class="text-4xl uppercase font-bold drop-shadow-up tracking-wider">{{ weatherInfo.city }}</h1>
-                    <h3 class="mt-2 capitalize">{{ weatherInfo.desc }}</h3>
-                </div>
-                <div class="mt-10 px-10 py-5 md:absolute right-0 bg-transparent/10 rounded-xl animate-slideInFadeIn" :class="hideDiv">
-                    <ul class="relative min-w-44">
-                        <li v-for="(value, name) in weatherInfo.other">
-                            {{ name }}: <span class="absolute right-0 font-bold">{{ value }}</span>
-                        </li>
-                    </ul>
-                </div>
+        <div class="container mx-auto px-4" :key="changer">
+            <MainWeather :weatherInfo="weatherInfo" />
+            
+            <div class="md:flex md:gap-4 xl:gap-8">
+                <Forecast :weather-list="forecastRef[0]" />
+                <Forecast :weather-list="forecastRef[1]" />
             </div>
         </div>
     </PageLayout>

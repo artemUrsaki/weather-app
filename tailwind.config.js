@@ -44,6 +44,16 @@ export default {
                         transform: 'translateY(0)',
                         opacity: '1'
                     }
+                },
+                XslideInFadeIn: {
+                    '0%': { 
+                        transform: 'translateX(400%)',
+                        opacity: '0'
+                    },
+                    '100%': { 
+                        transform: 'translateX(0)',
+                        opacity: '1'
+                    }
                 }
             },
             animation: {
@@ -51,7 +61,9 @@ export default {
                 fade: 'fadeIn 0.9s ease-in 1',
                 scaleIn: 'scaleIn 0.7s ease-out 1',
                 slideIn: 'slideIn 0.3s ease-out 1',
-                slideInFadeIn: '0.6s slideInFadeIn ease-out 1',
+                slideInFadeIn: '0.6s slideInFadeIn ease-out 0.4s 1',
+                mdSlideInFadeIn: '0.6s slideInFadeIn ease-out 0.6s 1',
+                XslideInFadeIn: '0.6s XslideInFadeIn ease-out 0.4s 1',
             }
         },
     },

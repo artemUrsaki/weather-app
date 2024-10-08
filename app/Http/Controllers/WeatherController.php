@@ -69,16 +69,16 @@ class WeatherController extends Controller
 
             $hours = [];
             $count = 0;
-            do {
+            while (date("Y-m-d") == date_format(date_create($info['list'][$count]['dt_txt']), "Y-m-d")) {
                 $list = $info['list'][$count];
                 array_push($hours, [
-                    'temp' => $list['main']['temp'],
+                    'temp' => floor($list['main']['temp']),
                     'icon' => $list['weather'][0]['icon'],
-                    'precip' => isset($list['rain']) ? round($list['rain']['3h'], 1) : 0,
+                    'precip' => $list['pop'] * 100,
                     'time' => date_format(date_create($list['dt_txt']), "H:i"),
                 ]);
                 $count++;
-            } while (date_format(date_create($info['list'][$count]["dt_txt"]), "G") != "0");
+            }
 
             $days = $this->getDailyForecast(array_slice($info['list'], $count));
             return [$hours, $days];
@@ -112,7 +112,7 @@ class WeatherController extends Controller
             $icon_arr[$icon] = isset($icon_arr[$icon]) ? $icon_arr[$icon] + 1 : 1;
 
             if ($item['main']['temp'] > $temp) $temp = $item['main']['temp'];
-            if (isset($item['rain']) && $item['rain']['3h'] > $precip) $precip = $item['rain']['3h'];
+            $precip += $item['pop'];
         }
 
         $icon = "";
@@ -124,11 +124,13 @@ class WeatherController extends Controller
             }
         }
 
+        $final_precip = round($precip / 8 * 100);
+
         return [
-            'temp' => $temp,
+            'time' => date_format(date_create($arr[0]['dt_txt']), "D"),
+            'temp' => floor($temp),
             'icon' => $icon,
-            'precip' => $precip,
-            'day' => date_format(date_create($arr[0]['dt_txt']), "D")
+            'precip' => $final_precip
         ];
     }
 }
