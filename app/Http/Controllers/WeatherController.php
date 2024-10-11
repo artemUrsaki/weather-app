@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Request;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 
 class WeatherController extends Controller
 {
+    public function getLocation() :Array {
+        $url = "https://api.ip2location.io/?key=". env('LOCATION_API_KEY') ."&format=json";
+        $info = json_decode(Http::get($url), true);
+        return $info;
+    }
+
     public function getCities(Request $request) {
         try {
             $city = $request->input('city');
@@ -55,7 +60,7 @@ class WeatherController extends Controller
     public function getWeather(Request $request) {
         $info = $request->input();
         if (!$info) {
-            $info = UserController::getUserInfo();
+            $info = $this->getLocation();
             return $this->getCityWeather($info, 'view');
         }
         return $this->getCityWeather($info, 'data');
